@@ -1,5 +1,5 @@
 const http = require("http")
-
+const { parse } = require("querystring")
 const fs = require("fs")
 
 const readFile = file => {
@@ -47,16 +47,26 @@ const addGuest = guest => {
 
 http
   .createServer(function(req, res) {
-    if (req.url === "/api/guests") {
+    if (req.url === "/api/guests" && req.method === "POST") {
       readFile("./guests.json").then(html => {
         res.write(html)
-        res.end()
+      })
+      let body = ""
+      req.on("data", chunk => {
+        body += chunk.toString()
+      })
+      req.on("end", () => {
+        //your code here
+        callback(parse(body))
+        //the buffer will be the data sent to the server on POST request to /api/guests
       })
     } else if (req.url === "/") {
       readFile("./index.html").then(html => {
         res.write(html)
         res.end()
       })
+    } else {
+      callback(null)
     }
   })
   .listen(8081)

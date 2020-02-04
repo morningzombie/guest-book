@@ -1,52 +1,54 @@
 <html>
-
-<head>
-    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+  <head>
+    <script
+      src="https://unpkg.com/react@16/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+      crossorigin
+    ></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <h1>The Acme Guest Book</h1>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useEffect, useState } = React
+      const { useEffect, useState } = React
 
-        const App = () => {
-            const [guests, setGuests] = useState([])
+      const App = () => {
+        const [guests, setGuests] = useState([])
 
-            useEffect(() => {
-                async function fetchData() {
-                    const guestData = await axios.get("/api/guests")
-                    const dataArr = await guestData.data
-                    console.log(dataArr[0])
-                    // setGuests(dataArr[0])
-                    setGuests(dataArr)
-                }
-                fetchData()
-            }, [])
-            console.log(guests, "guest")
+        useEffect(() => {
+          async function fetchData() {
+            const guestData = await axios.get("/api/guests")
+            const dataArr = await guestData.data
 
+            setGuests(dataArr)
+          }
+          fetchData()
+        }, [])
+        console.log(guests, "guest")
 
-            //  console.log(guest, "guest")
-            //
-            //create function to take input and add it to list of guests below the signin button
-            return (
-                <div>
-                    <form>
-                        <input name="Sign In Please"></input>
-                        <button>Sign In</button>
-                    </form>
+        return (
+          <div>
+            <form method="post" action="/api/guests">
+              <input name="Sign In Please"></input>
+              <button>Sign In</button>
+            </form>
+            <ul>
+              {guests.map((guest, index) => {
+                return <li key={index}>{guest.name}</li>
+              })}
+            </ul>
+          </div>
+        )
+      }
 
-
-                </div>
-            )
-        }
-
-        ReactDOM.render(<App />, document.querySelector("#root"))
+      ReactDOM.render(<App />, document.querySelector("#root"))
     </script>
-</body>
-
+  </body>
 </html>
